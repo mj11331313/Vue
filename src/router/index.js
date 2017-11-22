@@ -6,10 +6,11 @@ import Test from '@/components/Test'
 import Test1 from '@/components/Test1'
 import Test2 from '@/components/Test2'
 import TestUrl from '@/components/TestUrl'
+import Count from '@/components/Count'
 Vue.use(Router) // Vue.use()：使用插件
 
 export default new Router({
-  mode: history,  //  去掉url上的"#"
+  mode: 'history',  //  去掉url上的"#",默认值为hash
   routes: [
     {
       path: '/',
@@ -32,7 +33,13 @@ export default new Router({
         }, {
           path: '/testurl/:userName/:userId',
           name: 'TestUrl',
-          component: TestUrl
+          component: TestUrl,
+          //  路由钩子函数(1)：
+          beforeEnter: (to, from, next) => { // 在进入绑定组件前进行
+            console.log(to) // to：正在进入的组件（对象）,这里指TestUrl组件
+            console.log(from) //  from：进入绑定该钩子函数的组件前的路由信息（对象），这里指进入TestUrl组件前
+            next()  //  next(true)：路由跳转(true可以不写)：next(false)：路由不跳转
+          }
         }, {
           path: '/home',
           redirect: '/'   //  重定向：当url键入为/home时改变为/
@@ -44,6 +51,9 @@ export default new Router({
     }, {
       path: '*',  //  当键入的url没有匹配到时使用该路由
       component: Error  //  使用Error组件
+    }, {
+      path: '/count',
+      component: Count
     }
   ]
 })
